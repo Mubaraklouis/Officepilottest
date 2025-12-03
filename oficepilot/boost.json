@@ -1,0 +1,13 @@
+{
+    "agents": [
+        "cursor",
+        "gemini"
+    ],
+    "editors": [
+        "cursor",
+        "gemini"
+    ],
+    "guidelines": [
+        "laravel/fortify"
+    ]
+}
