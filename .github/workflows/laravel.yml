@@ -38,7 +38,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: oficepilot  
           file: oficepilot/docker/dockerfile  # Point to actual Dockerfile
           push: true
           tags: mubaraklouis/officepilottest:1.0.0
