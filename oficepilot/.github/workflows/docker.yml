@@ -1,0 +1,47 @@
+name: officepilot CI/CD
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Checkout private env repository
+        uses: actions/checkout@v4
+        with:
+          repository: Mubaraklouis/officepilottest-env # Must use format {owner}/{repo}
+          token: ${{ secrets.ENV_REPO_PAT }} # Personal access token with repo access
+          path: env-repo
+
+      - name: Copy .env file
+        run: |
+          cp env-repo/.env .env
+          echo "Copied .env file from private repository"
+          echo "Confirming .env file exists in build context:"
+          ls -la .env
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: docker/Dockerfile # Point to actual Dockerfile
+          push: true
+          tags: mubaraklouis/officepilottest:1.0.0
+          build-args: |
+            WWWGROUP=1000
+            WWWUSER=1000
